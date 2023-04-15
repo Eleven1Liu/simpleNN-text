@@ -62,7 +62,8 @@ global gpu_use;
 if exist('OCTAVE_VERSION', 'builtin')
 	gpu_use = false;
 else
-	gpu_use = (gpuDeviceCount > 0);
+	gpuDeviceCount = -1;  % tmp: disable GPU
+    gpu_use = (gpuDeviceCount > 0);
 end
 
 % floating-point type and the flag of storing Jacobian
@@ -72,7 +73,8 @@ param.Jacobian = [];
 
 % parameters for stochastic gradient
 
-param.epoch_max = 500;
+% param.epoch_max = 500;
+param.epoch_max = 1; % test
 param.lr = 0.01;
 if param.solver == 3
 	param.lr = 0.001;

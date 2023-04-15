@@ -7,7 +7,8 @@ phiZ = phiZ(net.idx_phiZ{m}, :);
 
 h = model.wd_filter(m);
 d = model.ch_input(m);
-phiZ = reshape(phiZ, h*h*d, []);
+% phiZ = reshape(phiZ, h*h*d, []);
+phiZ = reshape(phiZ, 1*h*d, []);
 
 function output = padding(model, Z, m, num_data)
 

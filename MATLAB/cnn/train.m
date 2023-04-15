@@ -48,19 +48,30 @@ model.weight = cell(L, 1);
 model.bias = cell(L, 1);
 var_num = zeros(L, 1);
 
+% convolutional layer
 for m = 1 : LC
-	model.ht_pad(m) = model.ht_input(m) + 2*model.wd_pad_added(m);
-	model.wd_pad(m) = model.wd_input(m) + 2*model.wd_pad_added(m);
-	model.ht_conv(m) = floor((model.ht_pad(m) - model.wd_filter(m))/model.strides(m)) + 1;
-	model.wd_conv(m) = floor((model.wd_pad(m) - model.wd_filter(m))/model.strides(m)) + 1;
-	model.ht_input(m+1) = floor(model.ht_conv(m)/model.wd_subimage_pool(m));
-	model.wd_input(m+1) = floor(model.wd_conv(m)/model.wd_subimage_pool(m));
-	var_num(m) = model.ch_input(m+1)*(model.wd_filter(m)*model.wd_filter(m)*model.ch_input(m) + 1);
+	model.ht_pad(m) = model.ht_input(m) + 2*model.wd_pad_added(m); % no padding here
+	model.wd_pad(m) = model.wd_input(m) + 2*model.wd_pad_added(m); % no padding here
+	
+    % model.ht_conv(m) = floor((model.ht_pad(m) - model.wd_filter(m))/model.strides(m)) + 1;  % no ht_conv here
+	model.ht_conv(m) = 1;  % a_out = (a_in - 500) / s +1 = 1
+    model.wd_conv(m) = floor((model.wd_pad(m) - model.wd_filter(m))/model.strides(m)) + 1;
 
-	model.weight{m} = gpu(ftype(randn(model.ch_input(m+1), model.wd_filter(m)*model.wd_filter(m)*model.ch_input(m))*sqrt(2.0/(model.wd_filter(m)*model.wd_filter(m)*model.ch_input(m)))));
+    % model.ht_input(m+1) = floor(model.ht_conv(m)/model.wd_subimage_pool(m));  % no ht pooling here
+	model.ht_input(m+1) = 1;
+    model.wd_input(m+1) = floor(model.wd_conv(m)/model.wd_subimage_pool(m));
+
+    % h1*h2 = 1*filter_size* (300 or 128)
+	% var_num(m) = model.ch_input(m+1)*(model.wd_filter(m)*model.wd_filter(m)*model.ch_input(m) + 1);
+    var_num(m) = model.ch_input(m+1)*(1*model.wd_filter(m)*model.ch_input(m) + 1);
+    
+    % random initialize weights (shape: 1* h2(filter_size) * channel sz(embedding_dim))
+    % model.weight{m} = gpu(ftype(randn(model.ch_input(m+1), model.wd_filter(m)*model.wd_filter(m)*model.ch_input(m))*sqrt(2.0/(model.wd_filter(m)*model.wd_filter(m)*model.ch_input(m)))));
+    model.weight{m} = gpu(ftype(randn(model.ch_input(m+1), 1*model.wd_filter(m)*model.ch_input(m))*sqrt(2.0/(1*model.wd_filter(m)*model.ch_input(m)))));
 	model.bias{m} = gpu(@zeros, [model.ch_input(m+1), 1]);
 end
 
+% linear layer
 num_neurons_prev = model.ht_input(LC+1)*model.wd_input(LC+1)*model.ch_input(LC+1);
 for m = LC+1 : L
 	num_neurons = model.full_neurons(m - LC);

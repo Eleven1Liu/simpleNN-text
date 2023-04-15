@@ -11,7 +11,7 @@ if issparse(Z)
 	error('The feature matrix must be dense.');
 end
 
-a = net_config.ht_input;
+a = net_config.ht_input;  % can be ignored?
 b = net_config.wd_input;
 
 if size(Z, 2) ~= net_config.ch_input(1)*a*b
@@ -23,7 +23,7 @@ prob.l = size(Z, 1);
 
 % Rearrange data from the shape of l x abd to the shape of dab x l
 tmp = [];
-for d = 1 : net_config.ch_input(1)
+for d = 1 : net_config.ch_input(1)  % word_embedding dimension: 300 here
 	tmp = [tmp; reshape(Z(:, (d-1)*a*b+1 : d*a*b)', [], 1)'];
 end
 prob.data = ftype(reshape(tmp, [], prob.l));

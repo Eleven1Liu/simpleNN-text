@@ -8,14 +8,16 @@ h = model.wd_subimage_pool(m);
 P = net.idx_phiZ_pool{m};
 Z = reshape(Zin, d*a*b, []);
 Z = Z(P, :);
-Z = reshape(Z, h*h, []);
+% Z = reshape(Z, h*h, []);
+Z = reshape(Z, 1*h, []);
 
 [Z, max_id] = max(Z);
 Z = reshape(Z, d, []);
 
 outa = model.ht_input(m+1);
 outb = model.wd_input(m+1);
-max_id = reshape(max_id, d*outa*outb, []) + h*h*gpu([0:d*outa*outb-1])';
+% max_id = reshape(max_id, d*outa*outb, []) + h*h*gpu([0:d*outa*outb-1])';
+max_id = reshape(max_id, d*outa*outb, []) + 1*h*gpu([0:d*outa*outb-1])';
 idx_pool = P(max_id);
 
 if exist('R_Zin', 'var')

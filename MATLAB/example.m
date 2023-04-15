@@ -1,5 +1,8 @@
 function example(options, input_format)
 
+% debug
+% options = '-bsize 64 -solver 3'; % adam
+
 if nargin == 0
 	options = '';
 end
@@ -15,14 +18,18 @@ addpath(genpath('./cnn'));
 
 %% Train
 % ------
-config_file = 'config/mnist-demo-layer4.config';
+config_file = 'config/ledgar_toy.config';
+% config_file = 'config/ledgar.config';
+% config_file = 'config/mnist-demo-layer4.config';
 net_config = read_config(config_file);
 a = net_config.ht_input(1);
 b = net_config.wd_input(1);
 d = net_config.ch_input(1);
 
 % Read train data sets
-load('data/mnist-demo.mat', 'y', 'Z');
+load('data/ledgar_toy.mat', 'y', 'Z');
+% load('data/ledgar.mat', 'y', 'Z');
+% load('data/mnist-demo.mat', 'y', 'Z');
 % Because sparse matrices stored in the provided mat file do not store zero columns in the end, we need to fill it.
 Z = [full(Z) zeros(size(Z,1), a*b*d - size(Z,2))];
 
@@ -32,34 +39,35 @@ if input_format == 0
 end
 
 % Normalization
-Z = Z / 255;
+% Z = Z / 255;
 
 % Zero mean
-mean_tr = mean(Z);
-Z = Z - mean_tr;
+% mean_tr = mean(Z);
+% Z = Z - mean_tr;
 
-seed = 111;
+% seed = 111;
+seed = 1337;
 
 model = cnn_train(y, Z, [], [], config_file, options, seed);
 
-%% Test
-% -----
-% Read test data sets
-load('data/mnist-demo.t.mat', 'y', 'Z');
-% Because sparse matrices stored in the provided mat file do not store zero columns in the end, we need to fill it.
-Z = [full(Z) zeros(size(Z,1), a*b*d - size(Z,2))];
-
-% If input data format is row-wise, we rearrange data from row-wise to col-wise
-if input_format == 0
-	Z = reshape(permute(reshape(Z, [],b,a,d), [1,3,2,4]), [], a*b*d);
-end
-
-% Normalization
-Z = Z / 255;
-
-% Zero mean
-Z = Z - mean_tr;
-
-[predicted_label, acc] = cnn_predict(y, Z, model);
-fprintf('test_acc: %g\n', acc);
+% %% Test
+% % -----
+% % Read test data sets
+% load('data/ledgar.t.mat', 'y', 'Z');
+% % Because sparse matrices stored in the provided mat file do not store zero columns in the end, we need to fill it.
+% Z = [full(Z) zeros(size(Z,1), a*b*d - size(Z,2))];
+% 
+% % If input data format is row-wise, we rearrange data from row-wise to col-wise
+% if input_format == 0
+% 	Z = reshape(permute(reshape(Z, [],b,a,d), [1,3,2,4]), [], a*b*d);
+% end
+% 
+% % Normalization
+% % Z = Z / 255;
+% 
+% % Zero mean
+% % Z = Z - mean_tr;
+% 
+% [predicted_label, acc] = cnn_predict(y, Z, model);
+% fprintf('test_acc: %g\n', acc);
 
