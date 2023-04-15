@@ -73,8 +73,7 @@ param.Jacobian = [];
 
 % parameters for stochastic gradient
 
-% param.epoch_max = 500;
-param.epoch_max = 1; % test
+param.epoch_max = 500;
 param.lr = 0.01;
 if param.solver == 3
 	param.lr = 0.001;
