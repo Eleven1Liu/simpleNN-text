@@ -1,6 +1,12 @@
 # README
 
 ## TBD
+
+### Debug
+- Test Accuracy
+    - Simple-NN Text: 0.07
+    - LibMultiLabel: 0.81
+
 ### Data
 (He-Zhe)
 - [ ] cannot read 'y' in ledgar_colwise.mat and ledgar.mat (OK in *.t.mat)
