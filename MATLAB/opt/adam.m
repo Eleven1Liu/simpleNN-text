@@ -23,7 +23,8 @@ end
 bsize = param.bsize;
 for k = 1 : param.epoch_max
 	for j = 1 : ceil(prob.l/bsize) 
-        batch_idx = randperm(prob.l, bsize);
+        batch_idx = bsize*(j-1)+1:bsize*j; % not shuffle
+%         batch_idx = randperm(prob.l, bsize);
 		[net, loss] = lossgrad_subset(prob, model, net, batch_idx, 'fungrad');
 		for m = 1 : model.L
 			gradW = [model.weight{m}(:);model.bias{m}]/param.C + [net.dlossdW{m}(:);net.dlossdb{m}]/bsize;
