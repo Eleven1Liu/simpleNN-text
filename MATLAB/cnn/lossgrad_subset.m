@@ -10,8 +10,8 @@ Y(prob.y_mapped(batch_idx) + model.nL*[0:num_data-1]') = 1;
 %Y = prob.label_mat(:, batch_idx);
 
 % fun
-net = feedforward(prob.data(:, batch_idx), model, net);
-loss = norm(net.Z{L+1} - Y, 'fro')^2;
+net = feedforward(prob.data(:, batch_idx), model, net); % debug: 4.9579
+loss = norm(net.Z{L+1} - Y, 'fro')^2; % ??
 
 if strcmp(task, 'fungrad')
 	% grad

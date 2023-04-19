@@ -2,7 +2,7 @@ function example(options, input_format)
 
 if nargin == 0
 	% options = '';
-    options = '-bsize 64 -s 3 -lr 0.0005 -decay 0 -epoch_max 50';  % debug: use adam
+    options = '-bsize 1 -s 3 -lr 0.0005 -decay 0 -epoch_max 1';  % debug: use adam
 end
 if nargin <= 1
 	input_format = 0;
@@ -16,21 +16,23 @@ addpath(genpath('./cnn'));
 
 %% Train
 % ------
-config_file = 'config/ledgar_toy.config';
+% config_file = 'config/ledgar_toy.config';
+config_file = 'config/ledgar_one.config';
 net_config = read_config(config_file);
 a = net_config.ht_input(1);
 b = net_config.wd_input(1);
 d = net_config.ch_input(1);
 
 % Read train data sets
-load('data/ledgar_toy.mat', 'y', 'Z');
+% load('data/ledgar_toy.mat', 'y', 'Z');
+load('data/ledgar_one_debug.mat', 'y', 'Z');
 
 % Because sparse matrices stored in the provided mat file do not store zero columns in the end, we need to fill it.
-Z = [full(Z) zeros(size(Z,1), a*b*d - size(Z,2))];
+% Z = [full(Z) zeros(size(Z,1), a*b*d - size(Z,2))];
 
 % If input data format is row-wise, we rearrange data from row-wise to col-wise
 if input_format == 0
-	Z = reshape(permute(reshape(Z, [],b,a,d), [1,3,2,4]), [], a*b*d);
+    Z = reshape(permute(reshape(Z, [],b,a,d), [1,3,2,4]), [], a*b*d);
 end
 
 % Normalization
@@ -48,7 +50,8 @@ model = cnn_train(y, Z, [], [], config_file, options, seed);
 %% Test
 % -----
 % Read test data sets
-load('data/ledgar_toy.t.mat', 'y', 'Z');
+% load('data/ledgar_toy.t.mat', 'y', 'Z');
+load('data/ledgar_one_debug.mat', 'y', 'Z');
 % Because sparse matrices stored in the provided mat file do not store zero columns in the end, we need to fill it.
 Z = [full(Z) zeros(size(Z,1), a*b*d - size(Z,2))];
 

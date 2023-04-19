@@ -8,8 +8,9 @@ LC = model.LC;
 
 for m = 1 : LC
 	net.phiZ{m} = padding_and_phiZ(model, net, net.Z{m}, m, num_data);
-	net.Z{m+1} = max(model.weight{m}*net.phiZ{m} + model.bias{m}, 0);
+	net.Z{m+1} = max(model.weight{m}*net.phiZ{m} + model.bias{m}, 0);  % relu
 
+    % max pooling
 	if model.wd_subimage_pool(m) > 1
 		[net.Z{m+1}, net.idx_pool{m}] = maxpooling(model, net, net.Z{m+1}, m);
 	end
@@ -18,6 +19,7 @@ end
 dab = model.ch_input(LC+1) * model.wd_input(LC+1) * model.ht_input(LC+1);
 net.Z{LC+1} = reshape(net.Z{LC+1}, dab, []);
 
+% not used
 for m = LC+1 : L-1
 	net.Z{m+1} = max(model.weight{m}*net.Z{m} + model.bias{m}, 0);
 end
