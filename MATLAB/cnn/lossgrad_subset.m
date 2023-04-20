@@ -35,7 +35,7 @@ if strcmp(task, 'fungrad')
     % sig =  1./(1+exp(-net.Z{L+1}));
     % v = (Y-sig); % .* net.Z{L+1};
     % v = (-Y) .* (1./net.Z{L+1}) + (1-Y) .* 1./(1-net.Z{L+1});
-	v = 2*(net.Z{L+1} - Y); % batch size * label size
+	v = 2*(net.Z{L+1} - Y); % batch size * label size, here v corresponds to dlossdZ{L+1}
 	v = JTv(model, net, v);
 	for m = 1 : L
 		net.dlossdW{m} = v{m}(:, 1:end-1);
