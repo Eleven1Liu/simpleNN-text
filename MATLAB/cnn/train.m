@@ -49,7 +49,7 @@ model.bias = cell(L, 1);
 var_num = zeros(L, 1);
 
 % load weights from LibMultiLabel
-load('data/ledgar_init_one_debug.mat', 'conv_weight', 'conv_bias', 'linear_weight', 'linear_bias');
+load('data/ledgar_init_toy.mat', 'conv_weight', 'conv_bias', 'linear_weight', 'linear_bias');
 
 % convolutional layer
 for m = 1 : LC

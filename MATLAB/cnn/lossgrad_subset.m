@@ -10,17 +10,32 @@ Y(prob.y_mapped(batch_idx) + model.nL*[0:num_data-1]') = 1;
 %Y = prob.label_mat(:, batch_idx);
 
 % fun
+K = size(Y, 1);
 net = feedforward(prob.data(:, batch_idx), model, net); % debug: 4.9579
-preds =  1./(1+exp(-net.Z{L+1}));
-loss = -mean(dot(Y, log(preds)) + dot(1-Y, log(1-preds))); % toy: 0.8888
-% loss = norm(net.Z{L+1} - Y, 'fro')^2; % ??
+preds =  1./(1+exp(-net.Z{L+1}));  % sigmoid
+
+% pytorch
+% Our solution is that BCELoss clamps its log function outputs to be 
+% greater than or equal to -100. This way, we can always have a finite loss value 
+% and a linear backward method.
+% loss = dot(Y, max(log(preds), -100)) + dot(1-Y, max(log(1.-preds), -100)); 
+
+% this might be different
+% loss = dot(Y, log(preds)) + dot(1-Y, log(1.-preds));
+% loss = loss ./ K;
+% loss = -mean(loss);
+loss = norm(net.Z{L+1} - Y, 'fro')^2; % ??
 
 if strcmp(task, 'fungrad')
 	% grad
-    % TBD: how to calculate the backward pass of
-    % binary_cross_entropy_with_logits?
-    % pytorch: loss.backward
-	v = 2*(net.Z{L+1} - Y);
+    % TBD: how to calculate the backward pass of BCE?
+    % https://courses.grainger.illinois.edu/ECE417/fa2021/lectures/lec18.pdf
+
+    % binary cross entropy
+    % sig =  1./(1+exp(-net.Z{L+1}));
+    % v = (Y-sig); % .* net.Z{L+1};
+    % v = (-Y) .* (1./net.Z{L+1}) + (1-Y) .* 1./(1-net.Z{L+1});
+	v = 2*(net.Z{L+1} - Y); % batch size * label size
 	v = JTv(model, net, v);
 	for m = 1 : L
 		net.dlossdW{m} = v{m}(:, 1:end-1);
