@@ -2,7 +2,8 @@ function example(options, input_format)
 
 if nargin == 0
 	% options = '';
-    options = '-bsize 5 -s 3 -lr 0.0005 -decay 0 -epoch_max 50';  % debug: use adam
+    options = '-bsize 5 -s 2 -lr 0.01 -decay 0 -C -inf -epoch_max 50';  % sgd
+    % options = '-bsize 5 -s 3 -lr 0.0005 -decay 0 -C -inf -epoch_max 50';  % adam
 end
 if nargin <= 1
 	input_format = 0;
