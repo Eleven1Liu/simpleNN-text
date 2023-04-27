@@ -1,34 +1,55 @@
 # README
 
-## TBD
-
-### Debug
+## Accuracy (TBD)
 - Test Accuracy
     - Simple-NN Text: 0.07
     - LibMultiLabel: 0.81
 
-### Data
-(He-Zhe)
-- [ ] cannot read 'y' in ledgar_colwise.mat and ledgar.mat (OK in *.t.mat)
-- [ ] there are some missing labels in sampled data so that matlab can't pass the data check
-- [ ] Z format:  假設 N = max length, d = embed dim,
-    ```
-    Z =
-    [ z11, z12, .. z1N,
-    z21, z22, ... z2N,
-    ...
-    zd1, zd2, ..., zdN ]
-    ```
-    dump 出來 row vector 要是 row-wise:
-    ```
-    [z11, ..., z1N, z21, ... , z2N, ... zdN]
-    ```
+## Data
+### Train / Test data
+N = max length, d = embed dim
+|                     |  Description         |
+| ------------------- | -------------------- |
+|  dataset            | LEDGAR               |
+|  shape              | (100, 3000) = (# of instances, $N \times d) $    |
+|  file path          | **train**: data/ledger_toy.mat , **test**: data/ledger_toy.t.mat  |
+|  Z format           |  $[z_{11}, ..., z_{1N}, z_{21}, ... , z_{2N}, ... z_{dN}]$ |
 
-### Training
-- [x] CNN: 2D to 1D
-- [x] P4-P8: phiZ index (find_index_phiZ)
-- [x] h*h -> 1*h
-- [ ] P7: ignore zero padding (?) padding with LibMultiLabel now
-- [ ] Train with Adam
+### Init weights from LibMultiLabel
+- data/ledgar_init_toy.mat
+
+## Code Changes
+### SimpleNN Config
+- config/ledgar_toy.config
+
+### Forward
+- **cnn/find_index_phiZ.m**
+    - h times h to 1 times h
+    - set `a_out` to 1
+- **cnn/maxpooling.m**, **cnn/padding_and_phiZ.m**
+    - h times h to 1 times h
+- **cnn/train.m**
+    - load init weight for convolutional layer and linear layer (provide student the code)
+    - update shape of convolutional layer (`ht_* = 1`)
+
+### Backward
+- **cnn/lossgrad_subset.m**: to be determined
+- **opt/adam.m**, **opt/sgd.m**: no shuffle
+
+### Others
 - [ ] Clean code, remove unused args (a_in?)
 - [ ] (low-priority) Concat different filter szs
+
+### LibMultiLabel config
+```yaml=
+max_seq_length: 10
+shuffle: false
+val_size: 0
+
+model_name: KimCNN
+network_config:
+  embed_dropout: 0.2
+  encoder_dropout: 0 # 0.2
+  filter_sizes: [2] # [2, 4, 8]
+  num_filter_per_size: 128 # filter channels
+```
