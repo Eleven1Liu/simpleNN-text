@@ -21,10 +21,11 @@ preds =  1./(1+exp(-net.Z{L+1}));  % sigmoid
 % loss = dot(Y, max(log(preds), -100)) + dot(1-Y, max(log(1.-preds), -100));
 
 % this might be different
-% loss = -(dot(Y, log(preds)) + dot(1-Y, log(1.-preds)));
-% loss = loss ./ K;
+loss = -(dot(Y, log(preds)) + dot(1-Y, log(1.-preds)));
+% size(loss)
+loss = sum(loss ./ K);
 % loss = mean(loss);
-loss = norm(net.Z{L+1} - Y, 'fro')^2; % ??
+% loss = norm(net.Z{L+1} - Y, 'fro')^2; % ??
 % dloss = 2*(net.Z{L+1} - Y)
 
 % loss = - (Y * log(sigmoid(x)) + (1-Y) * log(sigmoid(1-x)))
@@ -50,10 +51,11 @@ if strcmp(task, 'fungrad')
     % https://courses.grainger.illinois.edu/ECE417/fa2021/lectures/lec18.pdf
 
     % binary cross entropy
-    % sig =  1./(1+exp(-net.Z{L+1}));
-    % v = (Y-sig); % .* net.Z{L+1};
+    sig =  exp(net.Z{L+1})/(1+exp(net.Z{L+1}));
+    v = (sig-Y); % .* net.Z{L+1};
+	% size(v)
     % v = (-Y) .* (1./net.Z{L+1}) + (1-Y) .* 1./(1-net.Z{L+1});
-	v = 2*(net.Z{L+1} - Y); % batch size * label size, here v corresponds to dlossdZ{L+1}
+	% v = 2*(net.Z{L+1} - Y); % batch size * label size, here v corresponds to dlossdZ{L+1}
 	v = JTv(model, net, v);
 	for m = 1 : L
 		net.dlossdW{m} = v{m}(:, 1:end-1);
