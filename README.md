@@ -11,9 +11,9 @@ N = max length, d = embed dim
 |                     |  Description         |
 | ------------------- | -------------------- |
 |  dataset            | LEDGAR               |
-|  shape              | (100, 3000) = (# of instances, $N \times d) $    |
+|  shape              | (100, 3000) = (# of instances, $d \times N) $    |
 |  file path          | **train**: data/ledger_toy.mat , **test**: data/ledger_toy.t.mat  |
-|  Z format           |  $[z_{11}, ..., z_{1N}, z_{21}, ... , z_{2N}, ... z_{dN}]$ |
+|  row-wise $Z^{in,i}$ |  $[z_{11}, ..., z_{1N}, z_{21}, ... , z_{2N}, ... z_{dN}]$ |
 
 ### Init weights from LibMultiLabel
 - data/ledgar_init_toy.mat
@@ -24,12 +24,12 @@ N = max length, d = embed dim
 
 ### Forward
 - **cnn/find_index_phiZ.m**
-    - h times h to 1 times h
+    - $h \times h$ to $1 \times h$
     - set `a_out` to 1
 - **cnn/maxpooling.m**, **cnn/padding_and_phiZ.m**
-    - h times h to 1 times h
+    - $h \times h$ to $1 \times h$
 - **cnn/train.m**
-    - load init weight for convolutional layer and linear layer (provide student the code)
+    - load init weight for convolutional layer and linear layer (provide students the code)
     - update shape of convolutional layer (`ht_* = 1`)
 
 ### Backward
@@ -37,7 +37,7 @@ N = max length, d = embed dim
 - **opt/adam.m**, **opt/sgd.m**: no shuffle
 
 ### Others
-- [ ] Clean code, remove unused args (a_in?)
+- [ ] Clean code, remove unused args (`a_in`?)
 - [ ] (low-priority) Concat different filter szs
 
 ### LibMultiLabel config
