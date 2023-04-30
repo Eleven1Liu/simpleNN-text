@@ -26,7 +26,7 @@ net = feedforward(prob.data(:, batch_idx), model, net);
 % mystery loss
 loss = -Y .* net.Z{L+1} + log(1+exp(net.Z{L+1}));
 
-fprintf('batch loss: %g\n', mean(mean(loss)));
+% fprintf('batch loss: %g\n', mean(mean(loss)));
 loss = sum(mean(loss));
 
 % square error
@@ -35,7 +35,8 @@ loss = sum(mean(loss));
 if strcmp(task, 'fungrad')
 	% grad
     % backward is wrong in the second batch
-    v = -Y + (exp(net.Z{L+1}) ./ (1.+exp(net.Z{L+1})));
+	K = size(Y, 1);
+    v = (1./K) *(-Y + (exp(net.Z{L+1}) ./ (1.+exp(net.Z{L+1}))));
 
     % binary cross entropy
     % sig =  exp(net.Z{L+1})/(1+exp(net.Z{L+1}));
