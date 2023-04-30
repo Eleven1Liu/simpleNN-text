@@ -1,0 +1,33 @@
+# data
+training_file: data/LEDGAR/train_toy.txt
+test_file: data/LEDGAR/test_toy.txt
+data_name: LEDGAR
+min_vocab_freq: 1
+max_seq_length: 10
+
+# train
+seed: 1337
+epochs: 50
+batch_size: 5
+optimizer: sgd
+learning_rate: 0.1
+weight_decay: 0
+patience: 1
+shuffle: false
+
+# eval
+eval_batch_size: 5
+monitor_metrics: ['Micro-F1', 'Macro-F1', 'Loss', 'P@1']
+val_metric: Macro-F1
+val_size: 0
+
+# model
+model_name: KimCNN
+network_config:
+  embed_dropout: 0.2
+  encoder_dropout: 0
+  filter_sizes: [2]
+  num_filter_per_size: 128 # filter channels
+
+# pretrained vocab / embeddings
+embed_file: glove.6B.300d
