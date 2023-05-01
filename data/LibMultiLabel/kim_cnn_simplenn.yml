@@ -1,13 +1,16 @@
 # data
-training_file: data/LEDGAR/train_toy.txt
-test_file: data/LEDGAR/test_toy.txt
+training_file: data/LEDGAR/train.txt
+test_file: data/LEDGAR/test.txt
+# uncomment to run with toy examples
+# training_file: data/LEDGAR/train_toy.txt
+# test_file: data/LEDGAR/test_toy.txt
 data_name: LEDGAR
 min_vocab_freq: 1
-max_seq_length: 10
+max_seq_length: 100
 
 # train
 seed: 1337
-epochs: 50
+epochs: 5
 batch_size: 5
 optimizer: sgd
 learning_rate: 0.1
@@ -24,10 +27,10 @@ val_size: 0
 # model
 model_name: KimCNN
 network_config:
-  embed_dropout: 0.2
+  embed_dropout: 0
   encoder_dropout: 0
   filter_sizes: [2]
   num_filter_per_size: 128 # filter channels
 
 # pretrained vocab / embeddings
-embed_file: glove.6B.300d
+embed_file: glove.6B.100d
