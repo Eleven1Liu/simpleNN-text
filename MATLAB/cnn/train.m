@@ -49,34 +49,31 @@ model.bias = cell(L, 1);
 var_num = zeros(L, 1);
 
 % load weights from LibMultiLabel
-load('data/ledgar_init_toy.mat', 'conv_weight', 'conv_bias', 'linear_weight', 'linear_bias');
+if isfield(net_config, 'init_weight_mat')
+    load(net_config.init_weight_mat, 'conv_weight', 'conv_bias', 'linear_weight', 'linear_bias');
+end
 
 % convolutional layer
 for m = 1 : LC
 	model.ht_pad(m) = model.ht_input(m) + 2*model.wd_pad_added(m); % no padding here
 	model.wd_pad(m) = model.wd_input(m) + 2*model.wd_pad_added(m); % no padding here
 
-    % model.ht_conv(m) = floor((model.ht_pad(m) - model.wd_filter(m))/model.strides(m)) + 1;  % no ht_conv here
-	model.ht_conv(m) = 1;  % a_out = (a_in - 500) / s +1 = 1
+    model.ht_conv(m) = 1;  % a_out = 1
     model.wd_conv(m) = floor((model.wd_pad(m) - model.wd_filter(m))/model.strides(m)) + 1;
 
-    % model.ht_input(m+1) = floor(model.ht_conv(m)/model.wd_subimage_pool(m));  % no ht pooling here
-	model.ht_input(m+1) = 1;
+    model.ht_input(m+1) = 1;
     model.wd_input(m+1) = floor(model.wd_conv(m)/model.wd_subimage_pool(m));
 
-    % h1*h2 = 1*filter_size* (300 or 128)
-	% var_num(m) = model.ch_input(m+1)*(model.wd_filter(m)*model.wd_filter(m)*model.ch_input(m) + 1);
     var_num(m) = model.ch_input(m+1)*(1*model.wd_filter(m)*model.ch_input(m) + 1);
-
-    % random initialize weights (shape: 1* h2(filter_size) * channel sz(embedding_dim))
-    % model.weight{m} = gpu(ftype(randn(model.ch_input(m+1), model.wd_filter(m)*model.wd_filter(m)*model.ch_input(m))*sqrt(2.0/(model.wd_filter(m)*model.wd_filter(m)*model.ch_input(m)))));
-
-    % load weight
-    model.weight{m} = conv_weight;
-    model.bias{m} = conv_bias;
-
-%     model.weight{m} = gpu(ftype(randn(model.ch_input(m+1), 1*model.wd_filter(m)*model.ch_input(m))*sqrt(2.0/(1*model.wd_filter(m)*model.ch_input(m)))));
-%     model.bias{m} = gpu(@zeros, [model.ch_input(m+1), 1]);
+    
+    if exist('conv_weight','var') && exist('conv_bias','var')
+        model.weight{m} = conv_weight;
+        model.bias{m} = conv_bias;
+    else
+        % random initialize weights
+        model.weight{m} = gpu(ftype(randn(model.ch_input(m+1), 1*model.wd_filter(m)*model.ch_input(m))*sqrt(2.0/(1*model.wd_filter(m)*model.ch_input(m)))));
+        model.bias{m} = gpu(@zeros, [model.ch_input(m+1), 1]);
+    end
 end
 
 % linear layer
@@ -85,11 +82,14 @@ for m = LC+1 : L
 	num_neurons = model.full_neurons(m - LC);
 
     % load weights
-%  	model.weight{m} = gpu(ftype(randn(num_neurons, num_neurons_prev)*sqrt(2.0/(num_neurons_prev))));
-%  	model.bias{m} = gpu(@zeros, [num_neurons, 1]);
-    model.weight{m} = linear_weight;
-    model.bias{m} = linear_bias;
-
+    if exist('linear_weight','var') && exist('linear_bias','var')
+        model.weight{m} = linear_weight;
+        model.bias{m} = linear_bias;
+    else
+        model.weight{m} = gpu(ftype(randn(num_neurons, num_neurons_prev)*sqrt(2.0/(num_neurons_prev))));
+        model.bias{m} = gpu(@zeros, [num_neurons, 1]);
+    end
+    
 	var_num(m) = num_neurons * (num_neurons_prev + 1);
 	num_neurons_prev = num_neurons;
 end

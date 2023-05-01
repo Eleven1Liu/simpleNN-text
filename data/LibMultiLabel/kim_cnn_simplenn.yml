@@ -10,7 +10,7 @@ max_seq_length: 100
 
 # train
 seed: 1337
-epochs: 5
+epochs: 10
 batch_size: 5
 optimizer: sgd
 learning_rate: 0.1
