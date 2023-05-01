@@ -20,14 +20,6 @@ for k = 1 : param.epoch_max
 		% no shuffle
         batch_idx = bsize*(j-1)+1:bsize*j;
 		[net, loss] = lossgrad_subset(prob, model, net, batch_idx, 'fungrad');
-		disp("linear weights");
-		disp(model.weight{2});
-		disp("linear bias");
-		disp(model.bias{2});
-		disp("conv weights");
-		disp(model.weight{1});
-		disp("conv bias");
-		disp(model.bias{1});
 		for m = 1 : model.L
 			Grad = [net.dlossdW{m} net.dlossdb{m}]/bsize;
 			Grad = Grad + [model.weight{m} model.bias{m}]/param.C;

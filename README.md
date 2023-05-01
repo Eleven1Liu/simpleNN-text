@@ -1,9 +1,13 @@
 # README
 
-## Accuracy (TBD)
-- Test Accuracy
-    - Simple-NN Text: 0.07
-    - LibMultiLabel: 0.81
+
+## Getting started
+### Run simpleNN with the profiler
+```matlab
+profile on
+example('-bsize 5 -s 2 -lr 0.1 -decay 0 -C inf -epoch_max 5 -momentum 0.9');
+profile viewer
+```
 
 ## Data
 ### Train / Test data
@@ -38,7 +42,6 @@ N = max length, d = embed dim
 
 ### Others
 - [ ] Clean code, remove unused args (`a_in`?)
-- [ ] (low-priority) Concat different filter szs
 
 ### LibMultiLabel config
 ```yaml=

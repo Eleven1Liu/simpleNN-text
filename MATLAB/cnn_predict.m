@@ -24,7 +24,7 @@ acc = cal_accuracy(results, y);
 function param = parameter(options)
 
 param = struct;
-param.bsize = 64; % 128;
+param.bsize = 5;
 
 % Read options given by users
 if ~isempty(options)
