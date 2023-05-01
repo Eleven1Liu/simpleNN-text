@@ -1,9 +1,6 @@
 # data
-training_file: data/LEDGAR/train.txt
-test_file: data/LEDGAR/test.txt
-# uncomment to run with toy examples
-# training_file: data/LEDGAR/train_toy.txt
-# test_file: data/LEDGAR/test_toy.txt
+training_file: data/LibMultiLabel/train_toy.txt
+test_file: data/LibMultiLabel/test_toy.txt
 data_name: LEDGAR
 min_vocab_freq: 1
 max_seq_length: 100
@@ -11,16 +8,16 @@ max_seq_length: 100
 # train
 seed: 1337
 epochs: 10
-batch_size: 5
+batch_size: 100
 optimizer: sgd
 learning_rate: 0.1
-momentum: 0
+momentum : 0
 weight_decay: 0
 patience: 1
 shuffle: false
 
 # eval
-eval_batch_size: 5
+eval_batch_size: 100
 monitor_metrics: ['Micro-F1', 'Macro-F1', 'Loss', 'P@1']
 val_metric: Macro-F1
 val_size: 0

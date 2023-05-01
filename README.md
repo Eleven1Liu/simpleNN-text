@@ -4,7 +4,7 @@
 ### Run with the profiler
 ```matlab
 profile on
-example("-bsize 100 -s 2 -lr 0.1 -decay 0 -C inf -epoch_max 20", 0, "config/ledgar_toy.config");
+example("-bsize 100 -s 2 -lr 0.1 -decay 0 -C inf -epoch_max 10", 0, "config/ledgar_toy.config");
 profile viewer
 ```
 
